@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Achit Parmar — Client Acquisition Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ─── RESET & ROOT ─────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+:root {
+  --bg:       #07070f;
+  --bg2:      #0d0d1a;
+  --surface:  #13131f;
+  --border:   rgba(255,255,255,0.07);
+  --text:     #f0f0ff;
+  --muted:    #8888aa;
+  --accent:   #7b5cf0;
+  --accent2:  #00cfff;
+  --glow:     rgba(123,92,240,0.35);
+  --glow2:    rgba(0,207,255,0.2);
+  --heading:  'Syne', sans-serif;
+  --body:     'DM Sans', sans-serif;
+}
+
+body.light {
+  --bg:       #f5f5ff;
+  --bg2:      #eeeeff;
+  --surface:  #ffffff;
+  --border:   rgba(0,0,0,0.08);
+  --text:     #0a0a1a;
+  --muted:    #5555777;
+  --glow:     rgba(123,92,240,0.15);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  transition: background 0.4s, color 0.4s;
+}
+
+/* ─── NOISE OVERLAY ─────────────────────────── */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:9999; opacity:0.4;
+}
+
+/* ─── SCROLLBAR ─────────────────────────── */
+::-webkit-scrollbar { width:6px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--accent); border-radius:3px; }
+
+/* ─── CURSOR GLOW ─────────────────────────── */
+#cursor-glow {
+  position:fixed; width:400px; height:400px;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
+  pointer-events:none; transform:translate(-50%,-50%);
+  z-index:0; transition:opacity 0.3s;
+}
+
+/* ─── NAVBAR ─────────────────────────── */
+nav {
+  position:fixed; top:0; width:100%; z-index:1000;
+  padding:18px 7%;
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(7,7,15,0.7);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition: background 0.4s;
+}
+body.light nav { background:rgba(245,245,255,0.75); }
+
+.nav-logo {
+  font-family:var(--heading);
+  font-weight:800; font-size:18px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  letter-spacing:-0.5px;
+}
+
+.nav-links { display:flex; align-items:center; gap:30px; }
+.nav-links a {
+  color:var(--muted); text-decoration:none; font-size:14px;
+  font-weight:500; letter-spacing:0.3px;
+  transition:color 0.25s;
+}
+.nav-links a:hover { color:var(--text); }
+
+.theme-btn {
+  cursor:pointer; border:1px solid var(--border);
+  background:var(--surface); color:var(--text);
+  padding:8px 16px; border-radius:30px; font-size:13px;
+  font-family:var(--body); font-weight:500;
+  transition:all 0.25s; display:flex; align-items:center; gap:6px;
+}
+.theme-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+/* ─── HERO ─────────────────────────── */
+.hero {
+  min-height:100vh;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:140px 7% 100px;
+  position:relative; overflow:hidden;
+}
+
+.hero-bg {
+  position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 75% 50%, rgba(123,92,240,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,207,255,0.07) 0%, transparent 60%);
+}
+
+.hero-grid {
+  position:absolute; inset:0; pointer-events:none;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 70% 70% at 70% 50%, black 0%, transparent 80%);
+}
+
+.hero-left { max-width:560px; position:relative; z-index:1; }
+
+.hero-tag {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(123,92,240,0.1); border:1px solid rgba(123,92,240,0.3);
+  color:var(--accent); padding:6px 14px; border-radius:30px;
+  font-size:12px; font-weight:600; letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:28px;
+}
+.hero-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); animation:pulse 2s infinite; }
+
+@keyframes pulse {
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%{ opacity:0.4; transform:scale(0.7); }
+}
+
+.hero-left h1 {
+  font-family:var(--heading);
+  font-size:clamp(38px, 5vw, 62px);
+  font-weight:800; line-height:1.1;
+  letter-spacing:-2px;
+  margin-bottom:16px;
+}
+
+.hero-left h1 span {
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+
+.typewriter-wrap {
+  font-family:var(--heading); font-size:20px; font-weight:700;
+  color:var(--accent2); height:30px; margin-bottom:28px;
+  display:flex; align-items:center; gap:4px;
+}
+.typewriter-wrap #cursor { animation:blink 0.8s step-end infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+.hero-statement {
+  font-size:16px; color:var(--muted); line-height:1.8;
+  margin-bottom:36px; max-width:480px;
+}
+.hero-statement strong { color:var(--text); font-weight:600; }
+
+.hero-btns { display:flex; gap:14px; flex-wrap:wrap; }
+
+.btn-primary {
+  background:linear-gradient(135deg, var(--accent), #5a3fcf);
+  color:#fff; padding:14px 28px; border-radius:12px;
+  text-decoration:none; font-weight:600; font-size:15px;
+  box-shadow:0 0 30px var(--glow);
+  transition:transform 0.2s, box-shadow 0.2s;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 0 50px var(--glow); }
+
+.btn-ghost {
+  border:1px solid var(--border); color:var(--text);
+  padding:14px 28px; border-radius:12px; text-decoration:none;
+  font-weight:600; font-size:15px;
+  transition:all 0.2s;
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-ghost:hover { border-color:var(--accent); color:var(--accent); }
+
+/* HERO PHOTO */
+.hero-right {
+  position:relative; z-index:1; flex-shrink:0;
+}
+
+.photo-frame {
+  width:340px; height:420px;
+  border-radius:28px;
+  background:linear-gradient(145deg, var(--surface), var(--bg2));
+  border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+  box-shadow:0 0 80px var(--glow), 0 40px 80px rgba(0,0,0,0.4);
+}
+
+.photo-frame::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+}
+
+.photo-frame img {
+  width:100%; height:100%; object-fit:cover;
+  border-radius:28px;
+}
+
+.photo-placeholder {
+  text-align:center; padding:40px;
+}
+.photo-placeholder .avatar-icon {
+  width:100px; height:100px; border-radius:50%;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  margin:0 auto 20px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:40px; font-weight:800; color:#fff;
+  font-family:var(--heading);
+}
+.photo-placeholder p { color:var(--muted); font-size:13px; }
+
+.photo-badge {
+  position:absolute; bottom:-16px; left:50%; transform:translateX(-50%);
+  background:linear-gradient(135deg, var(--accent), #5a3fcf);
+  color:#fff; padding:10px 20px; border-radius:30px;
+  font-size:13px; font-weight:600; white-space:nowrap;
+  box-shadow:0 8px 30px var(--glow);
+}
+
+.float-card {
+  position:absolute; background:var(--surface);
+  border:1px solid var(--border); border-radius:14px;
+  padding:12px 18px; font-size:13px; font-weight:600;
+  box-shadow:0 10px 40px rgba(0,0,0,0.3);
+  display:flex; align-items:center; gap:10px;
+}
+.float-card.card1 { top:-20px; left:-40px; }
+.float-card.card2 { top:120px; right:-50px; }
+.float-card .dot { width:8px; height:8px; border-radius:50%; background:#22d87a; }
+.float-card .num { font-family:var(--heading); font-size:22px; color:var(--accent); }
+
+/* ─── SECTION COMMON ─────────────────────────── */
+.section { padding:120px 7%; position:relative; }
+
+.section-label {
+  font-size:11px; letter-spacing:3px; text-transform:uppercase;
+  color:var(--accent); font-weight:700; margin-bottom:16px;
+  display:flex; align-items:center; gap:10px;
+}
+.section-label::before { content:''; width:24px; height:2px; background:var(--accent); }
+
+.section-title {
+  font-family:var(--heading); font-size:clamp(32px, 4vw, 52px);
+  font-weight:800; letter-spacing:-1.5px; line-height:1.1;
+  margin-bottom:20px;
+}
+.section-title span {
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.section-subtitle { color:var(--muted); max-width:540px; font-size:17px; line-height:1.7; margin-bottom:70px; }
+
+/* ─── REVEAL ANIMATION ─────────────────────────── */
+.reveal {
+  opacity:0; transform:translateY(40px);
+  transition:opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.1s; }
+.reveal-delay-2 { transition-delay:0.2s; }
+.reveal-delay-3 { transition-delay:0.3s; }
+.reveal-delay-4 { transition-delay:0.4s; }
+
+/* ─── SECTION 2 — JOURNEY ─────────────────────────── */
+#journey { background:var(--bg); }
+
+.journey-intro {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:20px; padding:32px 36px; margin-bottom:64px;
+  max-width:680px; position:relative; overflow:hidden;
+}
+.journey-intro::before {
+  content:''; position:absolute; top:0; left:0; bottom:0; width:3px;
+  background:linear-gradient(to bottom, var(--accent), var(--accent2));
+}
+.journey-intro p { font-size:17px; line-height:1.8; color:var(--muted); }
+.journey-intro p strong { color:var(--text); }
+
+.timeline {
+  position:relative; padding-left:0;
+  display:grid; gap:0;
+}
+
+.timeline::before {
+  content:''; position:absolute; left:26px; top:0; bottom:0;
+  width:2px;
+  background:linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+}
+
+.tl-item {
+  display:grid; grid-template-columns:56px 1fr;
+  gap:24px; align-items:start; margin-bottom:56px;
+  position:relative;
+}
+
+.tl-dot {
+  width:56px; height:56px; border-radius:16px;
+  background:linear-gradient(135deg, var(--accent), #5a3fcf);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; flex-shrink:0; position:relative;
+  box-shadow:0 0 20px var(--glow);
+  z-index:1;
+}
+
+.tl-content {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:18px; padding:28px 32px;
+  transition:border-color 0.3s, box-shadow 0.3s;
+}
+.tl-content:hover {
+  border-color:rgba(123,92,240,0.4);
+  box-shadow:0 0 40px rgba(123,92,240,0.1);
+}
+
+.tl-year {
+  font-size:11px; letter-spacing:2px; text-transform:uppercase;
+  color:var(--accent); font-weight:700; margin-bottom:8px;
+}
+.tl-content h4 {
+  font-family:var(--heading); font-size:20px; font-weight:700;
+  margin-bottom:10px; letter-spacing:-0.5px;
+}
+.tl-content p { color:var(--muted); font-size:15px; line-height:1.7; }
+
+/* ─── SECTION 3 — PROCESS ─────────────────────────── */
+#process {
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+
+.objections-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:16px; margin-bottom:72px;
+}
+
+.objection-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; padding:24px 26px;
+  display:flex; align-items:flex-start; gap:14px;
+  transition:all 0.3s;
+}
+.objection-card:hover {
+  border-color:rgba(123,92,240,0.4);
+  transform:translateY(-3px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.2);
+}
+
+.obj-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+
+.objection-card p { font-size:15px; color:var(--muted); font-style:italic; line-height:1.6; }
+
+.process-connector {
+  text-align:center; padding:28px 0; margin-bottom:48px;
+}
+.process-connector p {
+  font-family:var(--heading); font-size:22px; font-weight:700; color:var(--text);
+  margin-bottom:8px;
+}
+.process-connector .sub { font-size:15px; color:var(--muted); font-family:var(--body); font-weight:400; }
+
+.stages-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:24px;
+}
+
+.stage-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:24px; padding:40px; position:relative; overflow:hidden;
+  transition:all 0.3s;
+}
+.stage-card:hover { box-shadow:0 0 60px rgba(123,92,240,0.12); border-color:rgba(123,92,240,0.3); }
+
+.stage-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg, var(--accent), var(--accent2));
+}
+
+.stage-num {
+  font-family:var(--heading); font-size:64px; font-weight:800;
+  color:rgba(123,92,240,0.15); position:absolute; top:20px; right:30px;
+  line-height:1; letter-spacing:-3px;
+}
+
+.stage-card h3 {
+  font-family:var(--heading); font-size:24px; font-weight:800;
+  letter-spacing:-0.5px; margin-bottom:8px;
+}
+.stage-card .stage-sub { color:var(--accent); font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; margin-bottom:24px; }
+
+.stage-items { list-style:none; display:flex; flex-direction:column; gap:12px; }
+.stage-items li {
+  display:flex; align-items:center; gap:12px;
+  color:var(--muted); font-size:15px;
+}
+.stage-items li::before {
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  flex-shrink:0;
+}
+
+/* ─── SECTION 4 — WORK ─────────────────────────── */
+#work { background:var(--bg); }
+
+/* LOGO SLIDER */
+.logos-section { margin-bottom:80px; overflow:hidden; position:relative; }
+.logos-fade {
+  position:absolute; top:0; bottom:0; width:120px; z-index:2;
+  pointer-events:none;
+}
+.logos-fade.left { left:0; background:linear-gradient(to right, var(--bg), transparent); }
+.logos-fade.right { right:0; background:linear-gradient(to left, var(--bg), transparent); }
+
+.logos-track-wrap { overflow:hidden; }
+.logos-row { display:flex; gap:0; animation:slide-logos 22s linear infinite; width:max-content; }
+.logo-item {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding:0 36px; min-width:160px;
+}
+.logo-box {
+  width:100px; height:54px; border-radius:12px;
+  background:var(--surface); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--heading); font-size:14px; font-weight:700;
+  color:var(--muted); letter-spacing:-0.5px;
+  transition:border-color 0.3s;
+}
+.logo-box:hover { border-color:var(--accent); color:var(--text); }
+.logo-industry { font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; font-weight:600; }
+
+@keyframes slide-logos {
+  0% { transform:translateX(0); }
+  100% { transform:translateX(-50%); }
+}
+
+/* STATS */
+.stats-row {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+  margin-bottom:80px;
+}
+.stat-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:20px; padding:32px 28px; text-align:center;
+  transition:all 0.3s;
+}
+.stat-card:hover { border-color:rgba(123,92,240,0.4); transform:translateY(-4px); }
+.stat-num {
+  font-family:var(--heading); font-size:48px; font-weight:800;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  letter-spacing:-2px; line-height:1;
+}
+.stat-label { color:var(--muted); font-size:14px; margin-top:8px; }
+
+/* META ADS SCREENSHOTS */
+.ads-preview-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:20px;
+  margin-bottom:80px;
+}
+.ads-preview-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:20px; padding:28px; overflow:hidden;
+  position:relative; transition:all 0.3s;
+}
+.ads-preview-card:hover { border-color:rgba(0,207,255,0.3); box-shadow:0 0 40px rgba(0,207,255,0.08); }
+.ads-preview-card .ads-header {
+  display:flex; align-items:center; gap:10px; margin-bottom:20px;
+}
+.ads-preview-card .ads-icon {
+  width:36px; height:36px; border-radius:10px;
+  background:linear-gradient(135deg, #1877F2, #0095f6);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:18px; font-weight:800;
+}
+.ads-preview-card h4 { font-family:var(--heading); font-weight:700; font-size:16px; }
+.ads-metrics {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+.metric {
+  background:var(--bg2); border-radius:12px; padding:14px 16px;
+}
+.metric .m-label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.metric .m-val {
+  font-family:var(--heading); font-size:22px; font-weight:700;
+  color:var(--text);
+}
+.metric .m-val.green { color:#22d87a; }
+.metric .m-val.blue { color:var(--accent2); }
+.metric .m-change { font-size:11px; color:#22d87a; margin-top:2px; }
+
+/* TESTIMONIALS */
+.testimonials-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+  gap:20px;
+}
+.testimonial-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:20px; padding:32px; transition:all 0.3s;
+  position:relative; overflow:hidden;
+}
+.testimonial-card::after {
+  content:'"'; position:absolute; top:-10px; right:20px;
+  font-family:Georgia, serif; font-size:120px; color:rgba(123,92,240,0.08);
+  line-height:1;
+}
+.testimonial-card:hover { border-color:rgba(123,92,240,0.3); transform:translateY(-4px); box-shadow:0 20px 60px rgba(0,0,0,0.2); }
+.stars { color:#f5c518; font-size:14px; margin-bottom:16px; letter-spacing:2px; }
+.testimonial-card p { color:var(--muted); font-size:15px; line-height:1.7; margin-bottom:24px; font-style:italic; }
+.t-author { display:flex; align-items:center; gap:12px; }
+.t-avatar {
+  width:42px; height:42px; border-radius:50%;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--heading); font-weight:800; color:#fff; font-size:16px;
+}
+.t-name { font-weight:600; font-size:15px; }
+.t-title { font-size:12px; color:var(--muted); }
+
+/* ─── FINAL CTA ─────────────────────────── */
+#contact {
+  background:var(--bg2);
+  border-top:1px solid var(--border);
+  text-align:center; padding:120px 7%;
+  position:relative; overflow:hidden;
+}
+#contact::before {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 100%, rgba(123,92,240,0.12) 0%, transparent 70%);
+}
+
+.cta-label {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(34,216,122,0.1); border:1px solid rgba(34,216,122,0.3);
+  color:#22d87a; padding:6px 14px; border-radius:30px;
+  font-size:12px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:28px;
+}
+.cta-label::before { content:''; width:6px; height:6px; border-radius:50%; background:#22d87a; animation:pulse 2s infinite; }
+
+#contact .section-title { margin-bottom:16px; }
+
+.cta-statement {
+  font-size:17px; color:var(--muted); max-width:540px;
+  margin:0 auto 20px; line-height:1.8;
+}
+.cta-statement strong { color:var(--text); }
+
+.cta-direct {
+  font-size:20px; color:var(--text); font-weight:600;
+  margin-bottom:44px; font-family:var(--heading);
+  letter-spacing:-0.5px;
+}
+
+.cta-btns { display:flex; align-items:center; justify-content:center; gap:16px; flex-wrap:wrap; }
+
+.cta-note {
+  margin-top:32px; font-size:13px; color:var(--muted);
+  display:flex; align-items:center; justify-content:center; gap:20px;
+}
+.cta-note span::before { content:'✓ '; color:#22d87a; }
+
+/* ─── FOOTER ─────────────────────────── */
+footer {
+  padding:32px 7%; border-top:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+  flex-wrap:wrap; gap:16px;
+}
+.footer-name {
+  font-family:var(--heading); font-weight:800; font-size:16px;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+footer p { color:var(--muted); font-size:13px; }
+
+/* ─── RESPONSIVE ─────────────────────────── */
+@media(max-width:1000px) {
+  .hero { flex-direction:column; text-align:center; padding:120px 6% 80px; }
+  .hero-left { max-width:100%; }
+  .hero-statement { margin:0 auto 36px; }
+  .hero-btns { justify-content:center; }
+  .hero-right { margin-top:60px; }
+  .float-card.card1 { left:-10px; }
+  .float-card.card2 { right:-10px; }
+  .stages-grid { grid-template-columns:1fr; }
+  .ads-preview-grid { grid-template-columns:1fr; }
+  .stats-row { grid-template-columns:1fr; }
+}
+@media(max-width:700px) {
+  .nav-links a { display:none; }
+  .photo-frame { width:280px; height:350px; }
+}
+
+/* ─── HERO ENTRANCE ANIMATION ─────────────────────────── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(30px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.hero-left .hero-tag   { animation:fadeUp 0.7s ease 0.1s both; }
+.hero-left h1          { animation:fadeUp 0.7s ease 0.25s both; }
+.hero-left .typewriter-wrap { animation:fadeUp 0.7s ease 0.4s both; }
+.hero-left .hero-statement  { animation:fadeUp 0.7s ease 0.5s both; }
+.hero-left .hero-btns  { animation:fadeUp 0.7s ease 0.6s both; }
+.hero-right            { animation:fadeUp 0.9s ease 0.4s both; }
+
+@keyframes floatY {
+  0%,100% { transform:translateY(0); }
+  50%      { transform:translateY(-10px); }
+}
+.photo-frame { animation:floatY 5s ease-in-out infinite; }
+
+/* ─── HORIZONTAL DIVIDER ─────────────────────────── */
+.divider {
+  border:none; height:1px;
+  background:linear-gradient(to right, transparent, var(--border), transparent);
+  margin:0 7%;
+}
+
+</style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-logo">Achit Parmar</div>
+  <div class="nav-links">
+    <a href="#journey">Journey</a>
+    <a href="#process">How I Work</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Let's Talk</a>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀ Light Mode</button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─────────────────────────── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">Available for New Projects</div>
+
+    <h1>Hi, I'm<br><span>Achit Parmar.</span></h1>
+
+    <div class="typewriter-wrap">
+      <span id="typewriter-text"></span><span id="cursor">|</span>
+    </div>
+
+    <p class="hero-statement">
+      Most businesses don't fail because they <strong>lack talent.</strong><br>
+      They fail because they don't have a <strong>system.</strong><br><br>
+      I build simple, clear client acquisition systems that bring you steady leads and steady revenue —
+      without the daily guessing, panic, or wasted budget.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#contact" class="btn-primary">📞 Book a Strategy Call</a>
+      <a href="#work" class="btn-ghost">View My Work →</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="float-card card1">
+      <div class="dot"></div>
+      <span>Systems Active</span>
+    </div>
+
+    <div class="photo-frame">
+      <div class="photo-placeholder">
+        <div class="avatar-icon">AP</div>
+        <p>Replace with your<br>AI founder photo</p>
+      </div>
+    </div>
+
+    <div class="float-card card2">
+      <div class="num">3x</div>
+      <span>Avg. Revenue Lift</span>
+    </div>
+
+    <div class="photo-badge">Client Acquisition Expert</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── SECTION 2 — JOURNEY ─────────────────────────── -->
+<section class="section" id="journey">
+  <div class="section-label reveal">My Story</div>
+  <h2 class="section-title reveal reveal-delay-1">
+    From Engineering Student<br>to <span>Growth Systems Builder</span>
+  </h2>
+  <p class="section-subtitle reveal reveal-delay-2">
+    I didn't follow a straight path. I followed a pattern — systems, logic, and structure.<br>
+    Here's how it all connects.
+  </p>
+
+  <div class="journey-intro reveal reveal-delay-3">
+    <p>
+      My background is in <strong>Computer Science & Engineering.</strong>
+      I've always been drawn to how systems work — how one part connects to another to produce a result.
+      Over time, that same thinking moved naturally into marketing, funnels, and client acquisition.
+      I didn't just learn tactics. I learned how to <strong>engineer outcomes.</strong>
+    </p>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item reveal">
+      <div class="tl-dot">🎬</div>
+      <div class="tl-content">
+        <div class="tl-year">2020 — First Experiments</div>
+        <h4>Live Learn Earn — Content & Digital Marketing</h4>
+        <p>Started a YouTube and Instagram channel. Built an audience from zero. Learned content creation, audience psychology, and the fundamentals of digital marketing. This is where I first understood what it means to earn attention before you earn money.</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal reveal-delay-1">
+      <div class="tl-dot">🏢</div>
+      <div class="tl-content">
+        <div class="tl-year">Agency Era</div>
+        <h4>Revibe Academy — Real Agency Experience</h4>
+        <p>Worked inside a social media marketing agency. I saw how real businesses struggle with growth — the gap between what agencies promise and what they actually deliver. I learned how to build social strategy, manage clients, and find what actually moves the needle for a business.</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal reveal-delay-2">
+      <div class="tl-dot">📊</div>
+      <div class="tl-content">
+        <div class="tl-year">Performance Marketing Phase</div>
+        <h4>Internships — Where Theory Became Execution</h4>
+        <p>Worked on paid ads, tracking setups, funnel builds, and client communication. Moved from learning to doing. I understood how acquisition truly works — not from theory, but from running campaigns where every rupee had to perform. This phase changed how I think about business growth.</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal reveal-delay-3">
+      <div class="tl-dot">🚀</div>
+      <div class="tl-content">
+        <div class="tl-year">Building Systems</div>
+        <h4>Arka Consultancy — Structured Growth Systems</h4>
+        <p>Co-built a one-stop growth solution for ecommerce brands. Focused on funnel architecture, paid traffic, and conversion optimization. This is where I stopped thinking in campaigns and started thinking in systems. The difference between a tactic and a system is whether it works without you watching it every day.</p>
+      </div>
+    </div>
+
+    <div class="tl-item reveal reveal-delay-4">
+      <div class="tl-dot">🎯</div>
+      <div class="tl-content">
+        <div class="tl-year">Today</div>
+        <h4>Client Acquisition Systems — One Clear Focus</h4>
+        <p>Now I focus on one thing: designing clear, simple systems that help businesses get predictable clients every single month. No guessing. No random tactics. Just a structure that works — even when you're not looking at it.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── SECTION 3 — PROCESS ─────────────────────────── -->
+<section class="section" id="process">
+  <div class="section-label reveal">How I Work</div>
+  <h2 class="section-title reveal reveal-delay-1">
+    Systems That Actually <span>Fix The Real Problem</span>
+  </h2>
+  <p class="section-subtitle reveal reveal-delay-2">
+    I know what you're thinking. You've probably heard this before. That's okay. Let me speak directly to what's running in your head right now.
+  </p>
+
+  <div class="objections-grid">
+    <div class="objection-card reveal">
+      <div class="obj-icon">😤</div>
+      <p>"Ads didn't work for me before. I burned money and got nothing."</p>
+    </div>
+    <div class="objection-card reveal reveal-delay-1">
+      <div class="obj-icon">😕</div>
+      <p>"Leads come in, but they don't convert. I'm talking to the wrong people."</p>
+    </div>
+    <div class="objection-card reveal reveal-delay-2">
+      <div class="obj-icon">📉</div>
+      <p>"Revenue goes up one month, disappears the next. No consistency."</p>
+    </div>
+    <div class="objection-card reveal reveal-delay-3">
+      <div class="obj-icon">🤷</div>
+      <p>"I don't actually know who my ideal client is — or how to find them at scale."</p>
+    </div>
+  </div>
+
+  <div class="process-connector reveal">
+    <p>The problem isn't your offer. It's not your skill. It's not even the market.</p>
+    <span class="sub">It's the missing structure underneath it all. Here's what I build instead.</span>
+  </div>
+
+  <div class="stages-grid">
+    <div class="stage-card reveal">
+      <div class="stage-num">01</div>
+      <p class="stage-sub">Week 1–2</p>
+      <h3>Build The Foundation</h3>
+      <p style="color:var(--muted);font-size:15px;margin:12px 0 24px;">Before running a single ad, we get everything crystal clear. Clarity creates conversion.</p>
+      <ul class="stage-items">
+        <li>Define your exact ideal client (ICP)</li>
+        <li>Sharpen your offer so it sells itself</li>
+        <li>Write messaging that clicks instantly</li>
+        <li>Map the entire funnel blueprint</li>
+        <li>Eliminate all guesswork upfront</li>
+      </ul>
+    </div>
+
+    <div class="stage-card reveal reveal-delay-1">
+      <div class="stage-num">02</div>
+      <p class="stage-sub">Week 3 Onwards</p>
+      <h3>Deploy & Optimize</h3>
+      <p style="color:var(--muted);font-size:15px;margin:12px 0 24px;">Once the structure is right, we launch — and we only optimize what the data tells us to.</p>
+      <ul class="stage-items">
+        <li>High-converting landing page</li>
+        <li>Paid traffic — Meta, Google, or both</li>
+        <li>Lead filtering so you talk to buyers only</li>
+        <li>Call structure that closes</li>
+        <li>Full tracking and optimization loop</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── SECTION 4 — WORK ─────────────────────────── -->
+<section class="section" id="work">
+  <div class="section-label reveal">Portfolio</div>
+  <h2 class="section-title reveal reveal-delay-1">
+    Clients & Industries<br><span>I've Worked With</span>
+  </h2>
+  <p class="section-subtitle reveal reveal-delay-2">
+    Across industries and business models — one thing stays constant. A clear system always outperforms random effort.
+  </p>
+
+  <!-- LOGO SLIDER -->
+  <div class="logos-section reveal">
+    <div class="logos-fade left"></div>
+    <div class="logos-fade right"></div>
+    <div class="logos-track-wrap">
+      <div class="logos-row">
+        <div class="logo-item"><div class="logo-box">Brand A</div><span class="logo-industry">E-commerce</span></div>
+        <div class="logo-item"><div class="logo-box">Brand B</div><span class="logo-industry">Consulting</span></div>
+        <div class="logo-item"><div class="logo-box">Brand C</div><span class="logo-industry">Local Service</span></div>
+        <div class="logo-item"><div class="logo-box">Brand D</div><span class="logo-industry">Agency</span></div>
+        <div class="logo-item"><div class="logo-box">Brand E</div><span class="logo-industry">Education</span></div>
+        <div class="logo-item"><div class="logo-box">Brand F</div><span class="logo-industry">Coaching</span></div>
+        <div class="logo-item"><div class="logo-box">Brand G</div><span class="logo-industry">Real Estate</span></div>
+        <!-- duplicated for infinite loop -->
+        <div class="logo-item"><div class="logo-box">Brand A</div><span class="logo-industry">E-commerce</span></div>
+        <div class="logo-item"><div class="logo-box">Brand B</div><span class="logo-industry">Consulting</span></div>
+        <div class="logo-item"><div class="logo-box">Brand C</div><span class="logo-industry">Local Service</span></div>
+        <div class="logo-item"><div class="logo-box">Brand D</div><span class="logo-industry">Agency</span></div>
+        <div class="logo-item"><div class="logo-box">Brand E</div><span class="logo-industry">Education</span></div>
+        <div class="logo-item"><div class="logo-box">Brand F</div><span class="logo-industry">Coaching</span></div>
+        <div class="logo-item"><div class="logo-box">Brand G</div><span class="logo-industry">Real Estate</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card reveal">
+      <div class="stat-num">15+</div>
+      <div class="stat-label">Businesses Helped Grow</div>
+    </div>
+    <div class="stat-card reveal reveal-delay-1">
+      <div class="stat-num">3x</div>
+      <div class="stat-label">Average Lead Volume Increase</div>
+    </div>
+    <div class="stat-card reveal reveal-delay-2">
+      <div class="stat-num">₹40L+</div>
+      <div class="stat-label">Ad Spend Managed</div>
+    </div>
+  </div>
+
+  <!-- META ADS MOCK -->
+  <div class="section-label reveal" style="margin-bottom:32px;">Campaign Results</div>
+  <div class="ads-preview-grid">
+    <div class="ads-preview-card reveal">
+      <div class="ads-header">
+        <div class="ads-icon">f</div>
+        <div>
+          <h4>E-commerce Brand — Meta Ads</h4>
+          <p style="font-size:12px;color:var(--muted);">Oct – Dec 2023 Campaign</p>
+        </div>
+      </div>
+      <div class="ads-metrics">
+        <div class="metric">
+          <div class="m-label">ROAS</div>
+          <div class="m-val green">4.8x</div>
+          <div class="m-change">↑ vs 1.9x before</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Cost Per Lead</div>
+          <div class="m-val blue">₹38</div>
+          <div class="m-change">↓ 62% from prev.</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Leads Generated</div>
+          <div class="m-val">840+</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Conversion Rate</div>
+          <div class="m-val green">6.2%</div>
+          <div class="m-change">↑ from 1.8%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ads-preview-card reveal reveal-delay-1">
+      <div class="ads-header">
+        <div class="ads-icon" style="background:linear-gradient(135deg,#34b7f1,#128c7e);">f</div>
+        <div>
+          <h4>Coaching Business — Lead Gen</h4>
+          <p style="font-size:12px;color:var(--muted);">Jan – Mar 2024 Campaign</p>
+        </div>
+      </div>
+      <div class="ads-metrics">
+        <div class="metric">
+          <div class="m-label">Monthly Revenue</div>
+          <div class="m-val green">3x</div>
+          <div class="m-change">Within 60 days</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Cost Per Call</div>
+          <div class="m-val blue">₹180</div>
+          <div class="m-change">↓ 55% from prev.</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Calls Booked</div>
+          <div class="m-val">120+</div>
+        </div>
+        <div class="metric">
+          <div class="m-label">Close Rate</div>
+          <div class="m-val green">28%</div>
+          <div class="m-change">↑ from 9%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section-label reveal" style="margin-bottom:32px;">What People Say</div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card reveal">
+      <div class="stars">★★★★★</div>
+      <p>"Within three weeks of working with Achit, we had qualified leads booking calls every single day. The system he built just works — and it keeps working without us chasing it."</p>
+      <div class="t-author">
+        <div class="t-avatar">R</div>
+        <div>
+          <div class="t-name">Rajan M.</div>
+          <div class="t-title">Founder, D2C Brand</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="stars">★★★★★</div>
+      <p>"Our previous agency gave us traffic. Achit gave us clients. There's a big difference. He focused on the entire journey, not just the ad."</p>
+      <div class="t-author">
+        <div class="t-avatar">P</div>
+        <div>
+          <div class="t-name">Pooja S.</div>
+          <div class="t-title">Business Coach</div>
+        </div>
+      </div>
+    </div>
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="stars">★★★★★</div>
+      <p>"I came in with no idea who my ideal client was. Achit helped me get clear on everything — the offer, the message, the funnel. Revenue tripled in two months."</p>
+      <div class="t-author">
+        <div class="t-avatar">K</div>
+        <div>
+          <div class="t-name">Karan V.</div>
+          <div class="t-title">Local Services Business</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ─── FINAL CTA ─────────────────────────── -->
+<section class="section" id="contact">
+  <div class="cta-label reveal">Free Strategy Call</div>
+  <h2 class="section-title reveal reveal-delay-1">
+    Let's Build Something<br><span>That Scales.</span>
+  </h2>
+  <p class="cta-statement reveal reveal-delay-2">
+    You're reading this because something isn't working the way it should be.<br>
+    <strong>That's the right moment to talk.</strong>
+  </p>
+
+  <p class="cta-direct reveal reveal-delay-3">
+    No hype. No pressure. Just a clear, honest conversation<br>about where you are and what needs to change.
+  </p>
+
+  <div class="cta-btns reveal reveal-delay-4">
+    <a href="#" class="btn-primary" style="font-size:17px;padding:18px 40px;">📞 Schedule a Strategy Call</a>
+  </div>
+
+  <div class="cta-note reveal">
+    <span>100% Free Call</span>
+    <span>No Long-Term Pressure</span>
+    <span>Just Clarity</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">Achit Parmar</div>
+  <p>© 2024 · Client Acquisition Systems</p>
+  <p style="color:var(--muted);font-size:13px;">Built with intention.</p>
+</footer>
+
+<!-- ─── SCRIPTS ─────────────────────────── -->
+<script>
+
+// CURSOR GLOW
+const glow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top  = e.clientY + 'px';
+});
+
+// TYPEWRITER
+const roles = [
+  "Client Acquisition Systems Builder",
+  "Lead Generation Strategist",
+  "Funnel & Growth Consultant",
+  "Paid Traffic Architect"
+];
+let ri=0, ci=0, deleting=false;
+function typeLoop() {
+  const el = document.getElementById('typewriter-text');
+  const word = roles[ri];
+  el.textContent = word.substring(0, ci);
+  if (!deleting && ci < word.length) { ci++; setTimeout(typeLoop, 75); }
+  else if (deleting && ci > 0)       { ci--; setTimeout(typeLoop, 40); }
+  else {
+    deleting = !deleting;
+    if (!deleting) ri = (ri+1) % roles.length;
+    setTimeout(typeLoop, deleting ? 1800 : 400);
+  }
+}
+typeLoop();
+
+// SCROLL REVEAL
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.12 });
+reveals.forEach(r => obs.observe(r));
+
+// THEME TOGGLE
+let dark = true;
+function toggleTheme() {
+  dark = !dark;
+  document.body.classList.toggle('light', !dark);
+  document.getElementById('themeBtn').textContent = dark ? '☀ Light Mode' : '🌙 Dark Mode';
+  glow.style.background = dark
+    ? 'radial-gradient(circle, rgba(123,92,240,0.35) 0%, transparent 70%)'
+    : 'radial-gradient(circle, rgba(123,92,240,0.15) 0%, transparent 70%)';
+}
+
+</script>
+</body>
+</html>
